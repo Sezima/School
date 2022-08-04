@@ -139,18 +139,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 AUTH_USER_MODEL = 'main.Teacher'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-SIMPLE_JWT = {
 
-     'AUTH_HEADER_TYPES': ('JWT',),
-
-}
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-    ],
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+   'DEFAULT_AUTHENTICATION_CLASSES': (
+       'rest_framework.authentication.TokenAuthentication',
+   ),
 }
 
 

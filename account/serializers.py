@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate
 
 from rest_framework import serializers
 
+from account.utils import send_activation_code
 from main.models import Teacher
 
 
@@ -26,13 +27,13 @@ class RegisterSerializer(serializers.ModelSerializer):
         grade = validated_data.get('grade')
         username = validated_data.get('username')
         user = Teacher.objects.create_user(phone_number=phone_number, password=password, grade=grade, username=username)
+        send_activation_code(phone_number=user.phone_number, activation_code=user.activation_code)
+
         return user
 
 
-
-
 class LoginSerializer(serializers.Serializer):
-    number = serializers.CharField(max_length=16)
+    phone_number = serializers.CharField(max_length=16)
     password = serializers.CharField(
         label='Password',
         style={'input_type': 'password'},

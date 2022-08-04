@@ -32,7 +32,6 @@ class Student(models.Model):
 class Teacher(AbstractUser):
     """Учитель"""
     username = models.CharField(max_length=100)
-    name = models.CharField(max_length=200)
     grade = models.CharField(max_length=10)
     phoneNumberRegex = RegexValidator(regex=r"^\+?1?\d{8,15}$")
     phone_number = models.CharField(validators=[phoneNumberRegex],
@@ -49,10 +48,12 @@ class Teacher(AbstractUser):
     objects = MyUserManager()
 
     def create_activation_code(self):
-        code = get_random_string(length=6,
-                                 allowed_chars='1234567890')
-        print(code)
-        self.activation_code = code
+        import hashlib
+        string = self.phone_number + str(self.id)
+        encode_string = string.encode()
+        md5_objects = hashlib.md5(encode_string)
+        activation_code = md5_objects.hexdigest()
+        self.activation_code = activation_code
 
     class Meta:
         verbose_name = 'Учитель'
@@ -83,7 +84,6 @@ class Grade(models.Model):
 class School(models.Model):
     """Школа"""
     name = models.CharField(max_length=300, verbose_name='Наименование школы')
-    grade = models.ForeignKey(Teach, on_delete=models.CASCADE, related_name='school')
 
     class Meta:
         verbose_name = 'Школа'
@@ -91,3 +91,10 @@ class School(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class SchoolGrade(models.Model):
+    school = models.ForeignKey(School, on_delete=models.CASCADE, related_query_name='grade')
+    grade = models.ForeignKey(Teach, on_delete=models.CASCADE, related_name='school')
+
+

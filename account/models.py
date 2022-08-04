@@ -9,7 +9,7 @@ class MyUserManager(BaseUserManager):
         if not phone_number:
             raise ValueError('Phone number must be set')
         user = self.model(phone_number=phone_number, **extra_fields)
-        user.password = make_password(password)
+        user.set_password(password)
         user.create_activation_code()
         user.save(using=self._db)
         return user
@@ -18,13 +18,10 @@ class MyUserManager(BaseUserManager):
         if not phone_number:
             raise ValueError('Phone number must be set')
         user = self.model(phone_number=phone_number, **extra_fields)
-        user.password = make_password(password)
+        user.set_password(password)
         user.is_active = True
         user.is_superuser = True
         user.is_staff = True
         user.save(using=self._db)
         return user
-
-
-
 
